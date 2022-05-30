@@ -33,10 +33,7 @@
             this.gameTimer = new System.Windows.Forms.Timer(this.components);
             this.titleLabel = new System.Windows.Forms.Label();
             this.scoreLabel = new System.Windows.Forms.Label();
-            this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
             this.subTitleLabel = new System.Windows.Forms.Label();
-            this.upSpeedButton = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
             this.SuspendLayout();
             // 
             // gameTimer
@@ -67,28 +64,18 @@
             // subTitleLabel
             // 
             this.subTitleLabel.Font = new System.Drawing.Font("MS Reference Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.subTitleLabel.Location = new System.Drawing.Point(38, 124);
+            this.subTitleLabel.Location = new System.Drawing.Point(43, 112);
             this.subTitleLabel.Name = "subTitleLabel";
             this.subTitleLabel.Size = new System.Drawing.Size(244, 111);
             this.subTitleLabel.TabIndex = 2;
             this.subTitleLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // upSpeedButton
-            // 
-            this.upSpeedButton.Location = new System.Drawing.Point(12, 265);
-            this.upSpeedButton.Name = "upSpeedButton";
-            this.upSpeedButton.Size = new System.Drawing.Size(75, 23);
-            this.upSpeedButton.TabIndex = 3;
-            this.upSpeedButton.Text = "button1";
-            this.upSpeedButton.UseVisualStyleBackColor = true;
             // 
             // floppyBird
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightBlue;
-            this.ClientSize = new System.Drawing.Size(334, 485);
-            this.Controls.Add(this.upSpeedButton);
+            this.ClientSize = new System.Drawing.Size(334, 486);
             this.Controls.Add(this.subTitleLabel);
             this.Controls.Add(this.scoreLabel);
             this.Controls.Add(this.titleLabel);
@@ -101,7 +88,6 @@
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.Form1_Paint);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyUp);
-            ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -111,9 +97,7 @@
         private System.Windows.Forms.Timer gameTimer;
         private System.Windows.Forms.Label titleLabel;
         private System.Windows.Forms.Label scoreLabel;
-        private System.Windows.Forms.BindingSource bindingSource1;
         private System.Windows.Forms.Label subTitleLabel;
-        private System.Windows.Forms.Button upSpeedButton;
     }
 }
 
