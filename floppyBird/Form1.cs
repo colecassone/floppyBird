@@ -7,25 +7,36 @@ namespace floppyBird
 {
     public partial class floppyBird : Form
     {
+        Image PGfloppy = Properties.Resources.Floppy_I;
+        Image backround = Properties.Resources.backround;
+
+        List<Rectangle> movingBackroud = new List<Rectangle>();
+        int backroundSpeed = 1;
+        int backroundX = 334;
+        int backroundY = 243; 
+       int backRoundCounter = 333; 
+
+
         bool spaceBar = false;
         bool pause = false;
         bool quit = false;
 
         int gameState = 1;
         int tunnelCount = 0;
-        int speed = 4; 
+        int speed = 4;
 
         int score = 0;
 
         int stateJump = 0;
 
-        Rectangle floppy = new Rectangle(50, 223, 10, 10);
+        Rectangle floppy = new Rectangle(50, 223, 25, 25);
 
         Pen drawPen = new Pen(Color.Black, 5);
-        SolidBrush backFill = new SolidBrush(Color.Black);
+        SolidBrush backFill = new SolidBrush(Color.Green);
 
         List<Rectangle> topTunnel = new List<Rectangle>();
         List<Rectangle> bottomTunnel = new List<Rectangle>();
+     List<bool> pointsList = new List<bool> { false, false, false };
 
         Random randGen = new Random();
 
@@ -48,7 +59,15 @@ namespace floppyBird
             titleLabel.Visible = false;
             subTitleLabel.Visible = false;
 
+            floppy.Y = 223; 
+
+            topTunnel.Clear(); 
+            bottomTunnel.Clear();   
+
+
             gameTimer.Start();
+            movingBackroud.Clear();
+            movingBackroud.Add(new Rectangle(0, 333, backroundX, backroundY)); 
 
 
 
@@ -62,8 +81,10 @@ namespace floppyBird
             }
             else if (gameState == 2)
             {
-                e.Graphics.FillRectangle(backFill, floppy);
-
+                e.Graphics.DrawImage(PGfloppy, floppy); 
+                    //(backFill, floppy);
+              //   score = score / 12; 
+                scoreLabel.Text = $"Score is {score}"; 
 
                 for (int i = 0; i < topTunnel.Count; i++)
                 {
@@ -71,8 +92,12 @@ namespace floppyBird
                 }
                 for (int i = 0; i < bottomTunnel.Count; i++)
                 {
-                     e.Graphics.FillRectangle(backFill, bottomTunnel[i]);
+                    e.Graphics.FillRectangle(backFill, bottomTunnel[i]);
                 }
+                for (int i = 0; i < movingBackroud.Count; i++)
+                {
+                    e.Graphics.DrawImage(backround , movingBackroud[i]);
+                } 
             }
             else
             {
@@ -180,28 +205,101 @@ namespace floppyBird
 
             if (tunnelCount == 70)
             {
-                int Random = randGen.Next(1, 350);
-
-            //   topTunnel.Add(new Rectangle(50, 0, 30, Random));
-                Random = Random - 40; 
-               bottomTunnel.Add(new Rectangle(50, Random, 30, 486)); 
+                int Random = randGen.Next(1, 400);
+                    topTunnel.Add(new Rectangle(400, 0, 30, Random));
+               
+               
+           //     pointList.Add(new bool (true)); 
+                int hight = 486 - Random - 100;
+                Random = Random + 100;
+                bottomTunnel.Add(new Rectangle(400, Random, 30, hight));
 
                 tunnelCount = 0;
+
+                int i = 0; 
+
+
+                pointsList[i] = true;
+
+                i++; 
             }
 
 
             ////Moving the tunnes
-            ////for (int i = 0; i < topTunnel.Count; i++)
-            ////{
-            ////    int x = topTunnel[i].X + Speed;
-            ////    topTunnel[i] = (new Rectangle(x, topTunnel[i].Y, 30, WballSize));
-            ////}
 
-            // Check for tunnel intersection
+            for (int i = 0; i < topTunnel.Count; i++)
+            {
+                int x = topTunnel[i].X - speed;
+                topTunnel[i] = (new Rectangle(x, 0, 30, topTunnel[i].Height));
+            }
+            for (int i = 0; i < bottomTunnel.Count; i++)
+            {
+                int x = bottomTunnel[i].X - speed;
+                bottomTunnel[i] = (new Rectangle(x, bottomTunnel[i].Y, 30, bottomTunnel[i].Height));
+            }
+            // removing the tunnels 
 
-            // Check score
+            for (int i = 0; i < topTunnel.Count; i++)
+            {
+                if (topTunnel[i].X <= -20)
+                {
+                    topTunnel.RemoveAt(i); 
+                   
+                }
+                if (bottomTunnel[i].X <= -20)
+                { 
+                    bottomTunnel.RemoveAt(i);
+                }
 
+                //if (pointsList[i]. <= -20)
+                //{
+                //    pointsList.RemoveAt(i);
+                //}
+              
+
+
+
+
+              //  if (piontsList [i].X <= - 20 )
+              //{
+              //  score++; 
+              // }
+            
+
+            } 
+
+
+                // intercetion of the tunnels
+
+                for (int i = 0; i < bottomTunnel.Count; i++)
+            {
+                if (floppy.IntersectsWith(bottomTunnel[i]))
+                {
+                    gameState = 3; 
+                }
+                if (floppy.IntersectsWith(topTunnel[i]))
+                {
+                    gameState = 3;
+                }
+            }
+
+
+            // scoring 
+            // backround 
+
+            backRoundCounter++; 
+            if (backRoundCounter == 334)
+             {
+                 movingBackroud.Add(new Rectangle(668, 333, backroundX, backroundY));
+                backRoundCounter = 0;
+            }
+            for(int i = 0; i < movingBackroud.Count; i++)
+            {
+                int x = movingBackroud[i].X - backroundSpeed;
+                movingBackroud[i] = new Rectangle(x, movingBackroud[i].Y, backroundX, backroundY);
+
+            }
             Refresh();
         }
     }
-}
+} 
