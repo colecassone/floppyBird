@@ -288,10 +288,10 @@ namespace floppyBird
             // backround 
 
             backRoundCounter++; 
-            if (backRoundCounter == 334)
+            if (backRoundCounter == 50)
              {
                  movingBackroud.Add(new Rectangle(668, 333, backroundX, backroundY));
-                backRoundCounter = 0;
+                 backRoundCounter = 0;
             }
             for(int i = 0; i < movingBackroud.Count; i++)
             {
