@@ -9,12 +9,20 @@ namespace floppyBird
     {
         Image PGfloppy = Properties.Resources.Floppy_I;
         Image backround = Properties.Resources.backround;
+        Image cloud = Properties.Resources.clouds;
 
-        List<Rectangle> movingBackroud = new List<Rectangle>();
+        List <Rectangle> movingBackroud = new List<Rectangle>();
         int backroundSpeed = 1;
         int backroundX = 334;
         int backroundY = 243; 
-       int backRoundCounter = 333; 
+       int backRoundCounter = 298;
+
+
+        List<Rectangle> clouds = new List<Rectangle>();
+        int cloudsSpeed = 1;
+        int cloudX = 47;
+        int cloudY = 30;
+        int cloudCounter = 0; 
 
 
         bool spaceBar = false;
@@ -81,6 +89,14 @@ namespace floppyBird
             }
             else if (gameState == 2)
             {
+                for (int i = 0; i < movingBackroud.Count; i++)
+                {
+                    e.Graphics.DrawImage(backround, movingBackroud[i]);
+                }
+                for (int i = 0; i < clouds.Count; i++)
+                {
+                    e.Graphics.DrawImage(cloud, clouds[i]);
+                }
                 e.Graphics.DrawImage(PGfloppy, floppy); 
                     //(backFill, floppy);
               //   score = score / 12; 
@@ -94,10 +110,7 @@ namespace floppyBird
                 {
                     e.Graphics.FillRectangle(backFill, bottomTunnel[i]);
                 }
-                for (int i = 0; i < movingBackroud.Count; i++)
-                {
-                    e.Graphics.DrawImage(backround , movingBackroud[i]);
-                } 
+               
             }
             else
             {
@@ -205,7 +218,7 @@ namespace floppyBird
 
             if (tunnelCount == 70)
             {
-                int Random = randGen.Next(1, 400);
+                int Random = randGen.Next(1, 350);
                     topTunnel.Add(new Rectangle(400, 0, 30, Random));
                
                
@@ -251,54 +264,58 @@ namespace floppyBird
                     bottomTunnel.RemoveAt(i);
                 }
 
-                //if (pointsList[i]. <= -20)
-                //{
-                //    pointsList.RemoveAt(i);
-                //}
-              
-
-
-
-
-              //  if (piontsList [i].X <= - 20 )
-              //{
-              //  score++; 
-              // }
-            
+               
 
             } 
 
 
                 // intercetion of the tunnels
 
-                for (int i = 0; i < bottomTunnel.Count; i++)
-            {
-                if (floppy.IntersectsWith(bottomTunnel[i]))
-                {
-                    gameState = 3; 
-                }
-                if (floppy.IntersectsWith(topTunnel[i]))
-                {
-                    gameState = 3;
-                }
-            }
+            //    for (int i = 0; i < bottomTunnel.Count; i++)
+            //{
+            //    if (floppy.IntersectsWith(bottomTunnel[i]))
+            //    {
+            //        gameState = 3; 
+            //    }
+            //    if (floppy.IntersectsWith(topTunnel[i]))
+            //    {
+            //        gameState = 3;
+            //    }
+            //}
 
 
             // scoring 
-            // backround 
+            // city moving backround 
 
             backRoundCounter++; 
-            if (backRoundCounter == 50)
+            if (backRoundCounter == 299)
              {
-                 movingBackroud.Add(new Rectangle(668, 333, backroundX, backroundY));
+                 movingBackroud.Add(new Rectangle(300, 333, backroundX, backroundY));
                  backRoundCounter = 0;
             }
             for(int i = 0; i < movingBackroud.Count; i++)
             {
                 int x = movingBackroud[i].X - backroundSpeed;
                 movingBackroud[i] = new Rectangle(x, movingBackroud[i].Y, backroundX, backroundY);
-
             }
+
+            // clouds moving backround 
+            cloudCounter++;
+            if (cloudCounter == 100)
+            {
+                int Random = randGen.Next(1, 350);
+                
+                clouds.Add(new Rectangle(334, Random, cloudX, cloudY));
+                cloudCounter = 0;
+            }
+
+            for (int i = 0; i < clouds.Count; i++)
+            {
+                int x = clouds[i].X - cloudsSpeed;
+                clouds[i] = new Rectangle(x, clouds[i].Y, cloudX, cloudY);
+            }
+
+
             Refresh();
         }
     }
