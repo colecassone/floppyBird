@@ -2,27 +2,31 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using System.IO;
+using System.Media;
+using System.Threading; 
+
 
 namespace floppyBird
 {
     public partial class floppyBird : Form
     {
-        Image PGfloppy = Properties.Resources.Floppy_I;
-        Image backround = Properties.Resources.backround;
-        Image cloud = Properties.Resources.clouds;
+        Image PGfloppy;// = Properties.Resources.Floppy_I;
+        Image backround;// = Properties.Resources.backround;
+        Image cloud;// = Properties.Resources.clouds;
 
-        List <Rectangle> movingBackroud = new List<Rectangle>();
-        int backroundSpeed = 1;
+        List<Rectangle> movingBackroud = new List<Rectangle>();  
+        int backroundSpeed = 2;
         int backroundX = 334;
-        int backroundY = 243; 
-       int backRoundCounter = 298;
+        int backroundY = 243;
+        int backRoundCounter = 148;
 
 
         List<Rectangle> clouds = new List<Rectangle>();
         int cloudsSpeed = 1;
         int cloudX = 47;
         int cloudY = 30;
-        int cloudCounter = 0; 
+        int cloudCounter = 0;
 
 
         bool spaceBar = false;
@@ -44,7 +48,7 @@ namespace floppyBird
 
         List<Rectangle> topTunnel = new List<Rectangle>();
         List<Rectangle> bottomTunnel = new List<Rectangle>();
-     List<bool> pointsList = new List<bool> { false, false, false };
+        List<Rectangle> INscore = new List<Rectangle>();
 
         Random randGen = new Random();
 
@@ -52,6 +56,9 @@ namespace floppyBird
         public floppyBird()
         {
             InitializeComponent();
+             PGfloppy = Properties.Resources.Floppy_I;
+             backround = Properties.Resources.backround;
+             cloud = Properties.Resources.clouds;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -62,20 +69,25 @@ namespace floppyBird
         public void GameInitialize()
         {
             gameState = 2;
-            score = 0;
-
+            score = 0; 
+            tunnelCount = 0;
+            backRoundCounter = 148;
             titleLabel.Visible = false;
             subTitleLabel.Visible = false;
 
-            floppy.Y = 223; 
+            INscore.Clear(); 
 
-            topTunnel.Clear(); 
-            bottomTunnel.Clear();   
+            floppy.Y = 223;
+
+            topTunnel.Clear();
+            bottomTunnel.Clear();
 
 
             gameTimer.Start();
             movingBackroud.Clear();
-            movingBackroud.Add(new Rectangle(0, 333, backroundX, backroundY)); 
+            clouds.Clear();
+
+            movingBackroud.Add(new Rectangle(0, 333, backroundX, backroundY));
 
 
 
@@ -97,10 +109,10 @@ namespace floppyBird
                 {
                     e.Graphics.DrawImage(cloud, clouds[i]);
                 }
-                e.Graphics.DrawImage(PGfloppy, floppy); 
-                    //(backFill, floppy);
-              //   score = score / 12; 
-                scoreLabel.Text = $"Score is {score}"; 
+                e.Graphics.DrawImage(PGfloppy, floppy);
+                //(backFill, floppy);
+                //   score = score / 12; 
+                scoreLabel.Text = $"Score is {score}";
 
                 for (int i = 0; i < topTunnel.Count; i++)
                 {
@@ -110,7 +122,7 @@ namespace floppyBird
                 {
                     e.Graphics.FillRectangle(backFill, bottomTunnel[i]);
                 }
-               
+
             }
             else
             {
@@ -219,22 +231,17 @@ namespace floppyBird
             if (tunnelCount == 70)
             {
                 int Random = randGen.Next(1, 350);
-                    topTunnel.Add(new Rectangle(400, 0, 30, Random));
-               
-               
-           //     pointList.Add(new bool (true)); 
+                topTunnel.Add(new Rectangle(400, 0, 30, Random));
+                INscore.Add(new Rectangle(400, Random + 5, 5, 100)); 
+
+                //     pointList.Add(new bool (true)); 
                 int hight = 486 - Random - 100;
                 Random = Random + 100;
                 bottomTunnel.Add(new Rectangle(400, Random, 30, hight));
 
                 tunnelCount = 0;
 
-                int i = 0; 
-
-
-                pointsList[i] = true;
-
-                i++; 
+               
             }
 
 
@@ -250,73 +257,117 @@ namespace floppyBird
                 int x = bottomTunnel[i].X - speed;
                 bottomTunnel[i] = (new Rectangle(x, bottomTunnel[i].Y, 30, bottomTunnel[i].Height));
             }
+
+            for (int i = 0; i < INscore.Count; i++)
+            {
+                int x = INscore[i].X - speed;
+                INscore[i] = (new Rectangle(x, INscore[i].Y, 30, INscore[i].Height));
+            }
+
             // removing the tunnels 
 
             for (int i = 0; i < topTunnel.Count; i++)
-            {
+            { 
                 if (topTunnel[i].X <= -20)
                 {
-                    topTunnel.RemoveAt(i); 
-                   
+                    topTunnel.RemoveAt(i);
+
                 }
                 if (bottomTunnel[i].X <= -20)
-                { 
+                {
                     bottomTunnel.RemoveAt(i);
                 }
 
-               
-
-            } 
 
 
-                // intercetion of the tunnels
+            }
 
-            //    for (int i = 0; i < bottomTunnel.Count; i++)
-            //{
-            //    if (floppy.IntersectsWith(bottomTunnel[i]))
-            //    {
-            //        gameState = 3; 
-            //    }
-            //    if (floppy.IntersectsWith(topTunnel[i]))
-            //    {
-            //        gameState = 3;
-            //    }
-            //}
+
+            // intercetion of the tunnels
+
+            for (int i = 0; i < bottomTunnel.Count; i++)
+            {
+                if (floppy.IntersectsWith(bottomTunnel[i]))
+                {
+                    gameState = 3;
+                }
+                if (floppy.IntersectsWith(topTunnel[i]))
+                {
+                    gameState = 3;
+                }
+            }
 
 
             // scoring 
+
+            for (int i = 0; i < INscore.Count; i++)
+            {
+                if (floppy.IntersectsWith(INscore[i]))
+                {
+                    score++;
+                    INscore.RemoveAt(i);
+                    scoreLabel.Text = $"score is {score}"; 
+
+                }
+
+                
+            }
             // city moving backround 
 
-            backRoundCounter++; 
-            if (backRoundCounter == 299)
-             {
-                 movingBackroud.Add(new Rectangle(300, 333, backroundX, backroundY));
-                 backRoundCounter = 0;
+            backRoundCounter++;
+            if (backRoundCounter == 149)
+            {
+                movingBackroud.Add(new Rectangle(300, 333, backroundX, backroundY));
+                backRoundCounter = 0;
             }
-            for(int i = 0; i < movingBackroud.Count; i++)
+            for (int i = 0; i < movingBackroud.Count; i++)
             {
                 int x = movingBackroud[i].X - backroundSpeed;
                 movingBackroud[i] = new Rectangle(x, movingBackroud[i].Y, backroundX, backroundY);
             }
+
+
+            // removing ctiys for the list. 
+            for (int i = 0; i < movingBackroud.Count; i++)
+
+            {
+                if (movingBackroud[i].X <= -400)
+                {
+                    movingBackroud .RemoveAt(i);
+                }
+            }
+
 
             // clouds moving backround 
             cloudCounter++;
             if (cloudCounter == 100)
             {
                 int Random = randGen.Next(1, 350);
-                
+
                 clouds.Add(new Rectangle(334, Random, cloudX, cloudY));
                 cloudCounter = 0;
             }
 
             for (int i = 0; i < clouds.Count; i++)
-            {
+            {  
                 int x = clouds[i].X - cloudsSpeed;
                 clouds[i] = new Rectangle(x, clouds[i].Y, cloudX, cloudY);
+            }
+
+            // removing clouds 
+
+
+            for (int i = 0; i < clouds.Count; i++)
+
+            {
+                if (clouds[i].X <= -40)
+                {
+                    clouds.RemoveAt(i);
+                }
             }
 
 
             Refresh();
         }
     }
-} 
+}
